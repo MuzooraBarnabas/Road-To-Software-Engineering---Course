@@ -1,0 +1,5 @@
+Invoke the Sum function;
+
+- Create two input fields (one, two)
+- Call the function on button click. (add numbers)
+- Return the result on the 'result' id element.

@@ -1,0 +1,43 @@
+* {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+h1 {
+    color:brown;
+}
+
+.table  {
+    border: 1px solid #bbb;
+    border-collapse: collapse;
+    width: 500px;
+}
+
+.table tr {
+    border-bottom: 1px solid #bbb;
+}
+
+.table th {
+    color: white;
+    background-color: black;
+    border-color: black;
+    border-bottom-color: red;
+    text-transform: capitalize;
+    text-align: left;
+}
+
+.table tr:hover {
+    background-color: #bbb;
+    cursor: pointer;
+    color: red;
+}
+
+.table tr:nth-child(odd) {
+    background-color: #ddd;
+}
+
+#col {
+    color: blue;
+    width: 100px;
+    text-align: center;
+    text-transform: uppercase;
+}

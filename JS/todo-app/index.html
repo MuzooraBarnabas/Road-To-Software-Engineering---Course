@@ -1,0 +1,238 @@
+<html>
+
+<head>
+    <title>Create Todo</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+</head>
+
+<body class="w3-margin">
+    <div class="w3-card-4">
+        <header class="w3-container w3-black w3-padding w3-row">
+            <h2 class="w3-center">My Black List</h2>
+            <div class="w3-col m10">
+                <textarea id="todo-input" class="w3-input" placeholder="What is on your mind?"></textarea>
+            </div>
+
+            <div class="w3-col m2 w3-text-right">
+                <button id="todo-btn" class="w3-btn w3-medium w3-bar-item w3-block w3-teal" onclick="save_todo()">
+                    Add To List
+                </button>
+            </div>
+        </header>
+
+        <div class="w3-container w3-padding">
+            <table class="w3-table w3-table-all">
+                <thead>
+                    <th>ID</th>
+                    <th>ToDo</th>
+                    <th>Time Added</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </thead>
+                <tbody id="todoItems"></tbody>
+            </table>
+        </div>
+
+        <footer class="w3-container w3-gray w3-padding">
+            <span class="w3-tag w3-blue">Total Todos: <b id="total_todos">0</b></span> |
+            <span class="w3-tag w3-teal">Pending Todos: <b id="pending_todos">0</b></span> |
+            <span class="w3-tag w3-green">Completed Todos: 0</span>
+        </footer>
+    </div>
+
+    <script>
+        // list of todos
+        var todo_list = [];
+
+        function save_todo() {
+            let todo = document.getElementById("todo-input").value;
+            if (todo.trim() == "") return;
+
+            // get already saved todos from localstorage
+            let old_todos = JSON.parse(localStorage.getItem("todos"));
+
+            if (old_todos) {
+                // append the new todo to the saved todos
+                old_todos.push({
+                    name: todo,
+                    time: new Date(),
+                    completed: false
+                });
+                // save the updated todos to storage
+                localStorage.setItem("todos", JSON.stringify(old_todos));
+            } else {
+                // add new todo item to the todo list
+                todo_list.push({
+                    name: todo,
+                    time: new Date(),
+                    completed: false
+                });
+                // save the todos to storage
+                localStorage.setItem("todos", JSON.stringify(todo_list));
+            }
+
+            // reset todo input
+            document.getElementById("todo-input").value = "";
+
+            // get todos
+            get_todos();
+        }
+
+        // retrieve todos from storage
+        function get_todos() {
+            let todos = JSON.parse(localStorage.getItem("todos"));
+            let todoItems = document.getElementById("todoItems");
+
+            document.getElementById('total_todos').innerText = todos.length
+
+            // loop through the todos and display each todo
+            todoItems.innerHTML = "";
+            // define pending todos increamenter
+            let pending_todos = 0;
+
+            todos.forEach((todo, index) => {
+                // check if a todo is completed
+                let action = "";
+                let todo_name = todo.name;
+
+                if (todo.completed) {
+                    // show different action
+                    action = `<button class="w3-btn w3-medium w3-bar-item w3-teal" onclick="resume(${index})">Resume</button>`;
+                    todo_name = `<span style="color:green;text-decoration: line-through;">${todo.name}</span>`;
+                } else {
+                    pending_todos ++
+                    // render edit and done button
+                    action = `
+                        <button class="w3-btn w3-medium w3-bar-item w3-blue" onclick="edit_todo(${index})">Edit</button>
+                        <button class="w3-btn w3-medium w3-bar-item w3-green" onclick="completed(${index})">Done</button>`;
+                }
+
+                // update text of #pending_todos
+                document.getElementById('pending_todos').innerText = pending_todos
+
+                // time and date of todo
+                let todo_time = new Date(todo.time);
+
+                // append todo to todoItems
+                todoItems.innerHTML += `<tr>
+                        <td>${index + 1}</td>
+                        <td>${todo_name}</td>
+                        <td>${todo_time.toDateString()} at ${todo_time.toLocaleTimeString()}</td>
+                        <td>${todo.completed?"<span class='w3-text-green'>Completed</span>":"<span class='w3-text-blue'>Pending</span>"}</td>
+                        <td>
+                            <div class="w3-bar">
+                            ${action}
+                            <button class="w3-btn w3-medium w3-bar-item w3-red" onclick="deleteTodo(${index})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+
+            // update todo count
+            // document.getElementById('todo_count').innerHTML = `${todo_count} todo items.`
+            // if (todo_count == 1) {
+            //     document.getElementById('todo_count').innerHTML = `${todo_count} todo item.`
+            // }
+        }
+
+        // get todos as the page loads
+        get_todos();
+
+        // edit todo item
+        function edit_todo(index) {
+            let todos = JSON.parse(localStorage.getItem("todos"));
+            let todo = todos[index];
+
+            // open popup
+            let updated_todo = prompt(`Updating todo: '${todo.name}'`, todo.name);
+
+            // validate the input
+            if (updated_todo) {
+                // update the todo name
+                todo.name = updated_todo;
+
+                // update the storage with updated todos
+                localStorage.setItem("todos", JSON.stringify(todos));
+
+                // re-render the todos
+                get_todos();
+            }
+        }
+
+        // mark todo as completed
+        function completed(index) {
+            let todos = JSON.parse(localStorage.getItem("todos"));
+            let todo = todos[index];
+
+            // open popup
+            let updated_todo = confirm(
+                `Are you sure want to mark this todo as completed : '${todo.name}'?`
+            );
+
+            // validate the input
+            if (updated_todo) {
+                // update the todo completed
+                todo.completed = true;
+
+                // update the storage with updated todos
+                localStorage.setItem("todos", JSON.stringify(todos));
+
+                // re-render the todos
+                get_todos();
+            }
+        }
+
+        // resume a todo
+        function resume(index) {
+            let todos = JSON.parse(localStorage.getItem("todos"));
+            let todo = todos[index];
+
+            // open popup
+            let updated_todo = confirm(
+                `Are you sure want to resume this todo : '${todo.name}'?`
+            );
+
+            // validate the input
+            if (updated_todo) {
+                // update the todo completed
+                todo.completed = false;
+
+                // update the storage with updated todos
+                localStorage.setItem("todos", JSON.stringify(todos));
+
+                // re-render the todos
+                get_todos();
+            }
+        }
+
+        // deleteTodo
+        function deleteTodo(index) {
+            let todos = JSON.parse(localStorage.getItem("todos"));
+            let todo = todos[index];
+
+            // open popup
+            let updated_todo = confirm(
+                `Are you sure want to delete this todo : '${todo.name}'?`
+            );
+
+            // validate the input
+            if (updated_todo) {
+                // filter through the todos and return all todos minus the one selected
+                let new_todos = todos.filter(function (item, pos) {
+                    // check if the pos != index
+                    if (index != pos) {
+                        return item;
+                    }
+                });
+
+                // update the storage with updated todos
+                localStorage.setItem("todos", JSON.stringify(new_todos));
+
+                // re-render the todos
+                get_todos();
+            }
+        }
+    </script>
+</body>
+
+</html>

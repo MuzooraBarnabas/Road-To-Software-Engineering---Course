@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>
+            Functions
+        </title>
+    </head>
+    <body>
+        <h1>Functions</h1>
+
+        <h4 id="result"></h4>
+        
+        <input type="number" id="one">
+        <input type="number" id="two">
+        
+        <button onclick="Sum()">Add Numbers</button>
+        <script>
+
+            function InputText(el){
+                // console.log(el.value)
+                // document.getElementById('result').innerHTML = el.value
+
+            }
+
+            // procedural function
+            function functionName(name, age){
+                // code to get executed
+                console.log(name)
+                console.log(age)
+            }
+
+
+            // arrow function ES6
+            const Sum = ()=>{
+                var one = document.getElementById('one').value
+                var two = document.getElementById('two').value
+
+                document.getElementById('result').innerHTML = parseInt(one) + parseInt(two)
+            }
+ 
+            // Sum(200,8)
+        </script>
+    </body>
+</html>

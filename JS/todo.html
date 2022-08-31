@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do</title>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+
+
+    <div class="w3-container">
+        <h1 class="w3-center">My To-Do List</h1>
+
+        <table class="w3-table-all">
+            <thead>
+                <th>ID</th>
+                <th>ToDo</th>
+                <th>Action</th>
+            </thead>
+            <tbody id="todoItems"></tbody>
+        </table>        
+    </div>
+
+    <script>
+        let todos = [
+            { name:"Leaning Python", completed:false },
+            { name:"Leaning HTML", completed:false },
+            { name:"Leaning CSS", completed:true },
+        ]
+
+        // displaying todos
+        function showTodos(){
+            console.log(todos)
+            let todoItems = document.getElementById('todoItems')
+            // iterate through the todos
+            todos.forEach((todo, index)=>{
+                todoItems.innerHTML += `
+                <tr>
+                    <td>${index+1}</td>
+                    <td>${todo.name}</td>
+                    <td>
+                        <button class="w3-btn w3-green" onclick="markAsCompleted()">Completed</button>
+                        <button class="w3-btn w3-red" onclick="deleteTodo()">Delete</button>
+                    </td>
+                </tr>
+                `
+            })          
+
+        }
+        showTodos()
+        
+        // mark to do as completed
+        function markAsCompleted(index=1){
+            let new_todos = todos.filter((todo, pos)=>{
+                if(index == pos){
+                    return todo.completed = true
+                }else{
+                    return todo
+                }
+            })
+            console.log("Updated Todos", new_todos)
+        }
+
+        // delete a todo
+        function deleteTodo(index=2){
+            console.log("Old Array", todos)
+            // filter
+            let new_todos = todos.filter(function(todo, pos){
+                if (index != pos) {
+                    return todo
+                }
+            })
+            console.log("New array",new_todos)
+            // todo: pass the items to the table
+        }
+    </script>
+</body>
+</html>
